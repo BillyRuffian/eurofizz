@@ -13,22 +13,35 @@ class GamesController < ApplicationController
   # GET /games/new
   def new
     @game = Game.new
-    @contest = Contest.all.pluck(:year)
+    @contest_years = Contest.all.pluck(:year)
   end
 
   # GET /games/1/edit
   def edit
+    @contest_years = Contest.all.pluck(:year)
+  end
+
+  # GET /games/contests_by_year
+  def contests_by_year
+    year = params[:year]
+    @contests = Contest.where(year: year)
+
+    respond_to do |format|
+      format.turbo_stream
+    end
   end
 
   # POST /games or /games.json
   def create
     @game = Game.new(game_params)
+    @game.users << Current.user
 
     respond_to do |format|
       if @game.save
         format.html { redirect_to @game, notice: 'Game was successfully created.' }
         format.json { render :show, status: :created, location: @game }
       else
+        @contest_years = Contest.all.pluck(:year)
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @game.errors, status: :unprocessable_entity }
       end
@@ -61,11 +74,11 @@ class GamesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_game
-      @game = Game.find(params.expect(:id))
+      @game = Game.includes(:users, :contest).find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def game_params
-      params.expect(game: [ :contest_id ])
+      params.require(:game).permit(:contest_id)
     end
 end

@@ -1,0 +1,10 @@
+<%# This template updates the contest_id select options for the selected year %>
+<%= turbo_stream.update "contest_id_container" do %>
+  <%= label_tag "game[contest_id]", "Contest" %>
+  <select name="game[contest_id]" id="game_contest_id" class="block appearance-none shadow-sm rounded-md border px-3 py-2 mt-2 w-full">
+    <option value="">Select a contest</option>
+    <% @contests.each do |contest| %>
+      <option value="<%= contest.id %>"><%= contest.name %></option>
+    <% end %>
+  </select>
+<% end %>

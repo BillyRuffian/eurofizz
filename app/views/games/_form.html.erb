@@ -13,13 +13,16 @@
 
   <div class="my-5">
     <%= form.label :year %>
-    <%= form.text_field :year, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": game.errors[:year].none?, "border-red-400 focus:outline-red-600": game.errors[:year].any?}] %>
+    <%= form.select :year, @contest_years, 
+                    {include_blank: "Select year"}, 
+                    class: "block appearance-none shadow-sm rounded-md border px-3 py-2 mt-2 w-full",
+                    data: { 
+                      controller: "contests",
+                      action: "change->contests#fetchContests"
+                    } %>
   </div>
 
-  <div class="my-5">
-    <%= form.label :contest_id %>
-    <%= form.text_field :contest_id, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": game.errors[:contest_id].none?, "border-red-400 focus:outline-red-600": game.errors[:contest_id].any?}] %>
-  </div>
+  <div class="my-5" id="contest_id_container"></div>
 
   <div class="inline">
     <%= form.submit class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
